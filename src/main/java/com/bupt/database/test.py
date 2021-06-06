@@ -1,18 +1,20 @@
 import os
 
-dir = r"E:\basssssss\DatabaseCourseDesign\src\main\java"
+dir = r"E:\basssssss\DatabaseCourseDesign\src\main"
 # dir = r"./"
 
 total_lines = 0
 
 
-
 def cacu(path):
     print(path)
     global total_lines
-    with open(path, "r", encoding="utf-8")as f:
-        for _ in f:
-            total_lines += 1
+    try:
+        with open(path, "r", encoding="utf-8")as f:
+            for _ in f:
+                total_lines += 1
+    except:
+        pass
 
 
 def cnt(directory):

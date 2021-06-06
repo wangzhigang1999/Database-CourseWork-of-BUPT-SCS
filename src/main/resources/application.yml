@@ -1,11 +1,8 @@
 spring:
   datasource:
     username: root
-#    password: zhigang911
     password: root
-    #    password: WMMj7w9!N_LyDn#
     url: jdbc:mysql://127.0.0.1:3306/bupt?useSSL=false&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true
-#    url: jdbc:mysql://39.107.77.0:3306/bupt?useSSL=false&useUnicode=true&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.zaxxer.hikari.HikariDataSource
     hikari:

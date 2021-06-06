@@ -1,5 +1,3 @@
-import json
-
 from flask import Flask, request
 
 import service
@@ -14,7 +12,7 @@ def hello():
 
 
 @app.route('/exportTable', methods=['POST', 'GET'])
-def exportTable():
+def export_table():
     link = service.exportTable(request.values.get('tableName'))
     return link
 
@@ -43,7 +41,6 @@ def communityKPIIndicatorInformationQuery():
     endTimeStamp = request.values.get('endTimeStamp')
     field = request.values.get('field')
     communityName = request.values.get('communityName')
-    print(field)
     return service.communityKPIIndicatorInformationQuery(startTimeStamp, endTimeStamp, field, communityName)
 
 
