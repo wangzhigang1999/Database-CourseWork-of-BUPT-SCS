@@ -17,6 +17,7 @@ spring:
   application:
     name: database
   servlet:
+
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
@@ -35,5 +36,8 @@ spring:
     store-type: mongodb
 server:
   port: 8000
+  servlet:
+    session:
+      timeout: 6000
 
 logging.level.org.springframework.boot.autoconfigure: ERROR

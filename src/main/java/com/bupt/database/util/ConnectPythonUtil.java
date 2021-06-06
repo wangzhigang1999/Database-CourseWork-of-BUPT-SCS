@@ -16,7 +16,7 @@ public class ConnectPythonUtil {
     public static String convert(String data) {
         var put = new HashMap<String, String>();
         put.put("data", data);
-        org.jsoup.Connection.Response execute = Jsoup.connect("http://127.0.0.1:5000/" + "convertJsonToExcel").data(put).execute();
+        org.jsoup.Connection.Response execute = Jsoup.connect("http://127.0.0.1:5000/" + "convertJsonToExcel").timeout(0).data(put).execute();
         return execute.body();
     }
 }

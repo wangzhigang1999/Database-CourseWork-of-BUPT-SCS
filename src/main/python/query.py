@@ -1,10 +1,14 @@
 import json
+import os
+import shutil
+import uuid
 from itertools import combinations
 
 import pandas as pd
 import sqlalchemy
 from scipy import stats
 from pylouvain import PyLouvain
+from service import static_dir
 
 
 def connect():
@@ -47,9 +51,18 @@ def create_tbC2Inew(threshold):
     tbC2I['PrbC2I9'] = stats.norm.cdf(9, tbC2I['mean'], tbC2I['std'])
     tbC2I['PrbABS6'] = stats.norm.cdf(6, tbC2I['mean'], tbC2I['std']) - stats.norm.cdf(-6, tbC2I['mean'], tbC2I['std'])
     tbC2Inew = tbC2I.reset_index()
+
     tbC2Inew.to_sql('tbC2Inew', con, if_exists='replace', index=False)
-    analyze_interference()
-    return json.dumps({"msg": "success"})
+
+    analyze_interference(tbC2Inew)
+
+    data = tbC2Inew.head(10).to_json(orient="records")
+    file_name = str(uuid.uuid4())
+
+    tbC2Inew.to_excel("{}.xlsx".format(file_name), index=False)
+
+    shutil.move("{}.xlsx".format(file_name), os.path.join(static_dir, file_name + ".xlsx"))
+    return json.dumps({"msg": "success", "data": data, "download_url": "/database/{}.xlsx".format(file_name)})
 
 
 def create_tbC2I3(x):
@@ -74,16 +87,23 @@ def create_tbC2I3(x):
     tbC2I3 = tbC2I3.drop_duplicates()
     tbC2I3 = tbC2I3.sort_values(['Sector1', 'Sector2', 'Sector3'])
     tbC2I3.to_sql('tbC2I3', con, if_exists='replace', index=False)
-    return json.dumps({"msg": "success"})
+
+    data = tbC2I3.head(10).to_json(orient="records")
+    file_name = str(uuid.uuid4())
+
+    tbC2I3.to_excel("{}.xlsx".format(file_name), index=False)
+
+    shutil.move("{}.xlsx".format(file_name), os.path.join(static_dir, file_name + ".xlsx"))
+    return json.dumps({"msg": "success", "data": data, "download_url": "/database/{}.xlsx".format(file_name)})
 
 
-def analyze_interference():
+def analyze_interference(tbC2I):
     con = connect()
-    sql = f'''
-        select ServingSector, InterferingSector, mean
-        from tbC2Inew
-    '''
-    tbC2I = pd.read_sql(sql, con)
+    # sql = f'''
+    #     select ServingSector, InterferingSector, mean
+    #     from tbC2Inew
+    # '''
+    # tbC2I = pd.read_sql(sql, con)
     pyl, node_dict = PyLouvain.from_df(tbC2I)
     reverse_node_dict = dict(zip(node_dict.values(), node_dict.keys()))
     partition, q = pyl.apply_method()
@@ -107,7 +127,8 @@ def analyze_interference():
         categories.append(dict(name=f'社区{i}(节点数{len(partition[i])})', symbol='pin'))
         for node_id in p:
             name = reverse_node_dict[node_id]
-            nodes.append(dict(name=name, x=x_dict[name], y=y_dict[name], category=i, symbolOffset=[5 * offset_dict[name], 0]))
+            nodes.append(
+                dict(name=name, x=x_dict[name], y=y_dict[name], category=i, symbolOffset=[5 * offset_dict[name], 0]))
             community_dict[name] = i
 
     links = []
