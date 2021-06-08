@@ -36,7 +36,9 @@ def prb_hour(startTime, endTime, id, node):
     for i in mycursor:
         time.append(i[0])
         value.append(i[1])
-    return json.dumps({"time": time, "value": value})
+    json_data = json.dumps({"time": time, "value": value})
+    path = convertJsonToExcel(json_data)
+    return json.dumps({"time": time, "value": value, "download_url": path})
 
 
 def prb_min(startTime, endTime, id, node):
@@ -50,7 +52,9 @@ def prb_min(startTime, endTime, id, node):
     for i in mycursor:
         time.append(i[0])
         value.append(i[1])
-    return json.dumps({"time": time, "value": value})
+    json_data = json.dumps({"time": time, "value": value})
+    path = convertJsonToExcel(json_data)
+    return json.dumps({"time": time, "value": value, "download_url": path})
 
 
 def exportTable(tableName):

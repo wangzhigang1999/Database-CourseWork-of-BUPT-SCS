@@ -76,6 +76,9 @@ public class QueryService {
                 hashMap.put("current", current);
                 hashMap.put("total_pages", totalPages);
                 hashMap.put("records", records);
+                String json = new Gson().toJson(records);
+                String url = ConnectPythonUtil.convert(json);
+                hashMap.put("download_url", url);
                 return new Resp(hashMap);
 
             }
@@ -99,6 +102,9 @@ public class QueryService {
                 hashMap.put("current", current);
                 hashMap.put("total_pages", totalPages);
                 hashMap.put("records", records);
+                String json = new Gson().toJson(records);
+                String url = ConnectPythonUtil.convert(json);
+                hashMap.put("download_url", url);
                 return new Resp(hashMap);
             }
             default -> {
