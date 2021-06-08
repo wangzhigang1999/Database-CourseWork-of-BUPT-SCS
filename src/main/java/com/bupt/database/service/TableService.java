@@ -60,7 +60,11 @@ public class TableService {
         while (resultSet.next()) {
             HashMap<String, String> tmp = new HashMap<>(16);
             String table = resultSet.getString(1);
-            tmp.put("downloadable", "true");
+            if (table.contains("user") || table.contains("prb") || table.contains("PRB")) {
+                tmp.put("downloadable", "false");
+            } else {
+                tmp.put("downloadable", "true");
+            }
             map.put(table, tmp);
         }
         return new Resp(map);

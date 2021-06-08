@@ -12,16 +12,15 @@ static_dir = r"E:\basssssss\DatabaseCourseDesign\export_file"
 
 def communityKPIIndicatorInformationQuery(startTimeStamp, endTimeStamp, field, communityName):
     sql = "select 起始时间,`{}` from kpi where (小区名称='{}' and 起始时间>='{}' and 起始时间<='{}' )".format(field, communityName,
-                                                                                              startTimeStamp,
-                                                                                              endTimeStamp)
+                                                                                              startTimeStamp,                                                                               endTimeStamp)
     mycursor = cnx.cursor()
-
     mycursor.execute(sql)
     time = []
     value = []
     for i in mycursor:
         time.append(i[0])
         value.append(i[1])
+    mycursor.close()
     return json.dumps({"time": time, "value": value})
 
 
@@ -38,6 +37,8 @@ def prb_hour(startTime, endTime, id, node):
         value.append(i[1])
     json_data = json.dumps({"time": time, "value": value})
     path = convertJsonToExcel(json_data)
+    mycursor.close()
+
     return json.dumps({"time": time, "value": value, "download_url": path})
 
 
@@ -54,6 +55,7 @@ def prb_min(startTime, endTime, id, node):
         value.append(i[1])
     json_data = json.dumps({"time": time, "value": value})
     path = convertJsonToExcel(json_data)
+    mycursor.close()
     return json.dumps({"time": time, "value": value, "download_url": path})
 
 
@@ -107,7 +109,7 @@ def getInfo(type):
         mycursor.execute(sql)
         for i in mycursor:
             community_name.append(i[0])
-
+        mycursor.close()
     else:
         col_name_list.remove("StartTime")
         col_name_list.remove("ENODEB_NAME")
@@ -118,7 +120,7 @@ def getInfo(type):
         mycursor.execute(sql)
         for i in mycursor:
             community_name.append(i[0])
-
+        mycursor.close()
     res["available_fields"] = col_name_list
     res["community_name"] = community_name
 
