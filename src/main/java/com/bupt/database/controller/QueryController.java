@@ -37,8 +37,8 @@ public class QueryController {
     }
 
     @RequestMapping("/CommunityKPIIndicatorInformationQuery")
-    public Object communityKPIIndicatorInformationQuery(String startTimeStamp, String endTimeStamp, String field,String communityName) {
-        return service.communityKPIIndicatorInformationQuery(startTimeStamp, endTimeStamp, field,communityName);
+    public Object communityKPIIndicatorInformationQuery(String startTimeStamp, String endTimeStamp, String field, String communityName) {
+        return service.communityKPIIndicatorInformationQuery(startTimeStamp, endTimeStamp, field, communityName);
     }
 
     @RequestMapping("/getEnodeBID")
@@ -51,9 +51,10 @@ public class QueryController {
         return service.getEnodeBName();
     }
 
-    @RequestMapping("/getVisualableFieldsFromKpi")
-    public Object getVisualableFieldsFromKpi() {
-        return service.getVisualableFieldsFromKpi();
+    @RequestMapping("/getInfo")
+    public Object getInfo(String type) {
+        System.out.println(type);
+        return service.getInfo(type);
     }
 
 
@@ -65,5 +66,15 @@ public class QueryController {
     @RequestMapping("/getSectorName")
     public Object getSectorName() {
         return service.getSectorNAME();
+    }
+
+    @RequestMapping("/prbMinLevel")
+    public Object prbMinLevel(String start, String end, String id, String nodeName) {
+        return service.prbMinLevel(start, end, id, nodeName);
+    }
+
+    @RequestMapping("/prbHourLevel")
+    public Object prbHourLevel(String start, String end, String id, String nodeName) {
+        return service.prbHourLevel(start, end, id, nodeName);
     }
 }

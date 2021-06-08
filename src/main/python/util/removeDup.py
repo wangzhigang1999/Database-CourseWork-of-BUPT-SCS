@@ -1,8 +1,9 @@
 import pandas as pd
 
 from query import connect
+
 con = connect()
-table_name = "tbC2I"
+table_name = "tbPRB"
 sql = "select * from {}".format(table_name)
 pair = pd.read_sql(sql, con)
 print("read done")

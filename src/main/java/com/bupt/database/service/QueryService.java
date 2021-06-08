@@ -202,25 +202,11 @@ public class QueryService {
     }
 
     @SneakyThrows
-    public Object getVisualableFieldsFromKpi() {
-
-        List<String> columnNames = new ArrayList<>();
-        Connection connection = dataSource.getConnection();
-        PreparedStatement statement = connection.prepareStatement("select * from %s".formatted("kpi"));
-        ResultSetMetaData metaData = statement.getMetaData();
-        // 将表的所有字段提取出来
-        int size = metaData.getColumnCount();
-        for (int i = 0; i < size; i++) {
-            columnNames.add(metaData.getColumnName(i + 1));
-        }
-
-        columnNames.remove("起始时间");
-        columnNames.remove("网元基站名称");
-        columnNames.remove("小区");
-        columnNames.remove("小区名称");
-
-        var res = InterceptUtil.intercept(columnNames);
-        return new Resp(res);
+    public Object getInfo(String type) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("table", type);
+        String connect = ConnectPythonUtil.connect(map, "getInfo");
+        return new Resp(connect);
     }
 
 
@@ -234,5 +220,25 @@ public class QueryService {
         List<String> sector_name = cellMapper.getSECTOR_NAME();
         var res = InterceptUtil.intercept(sector_name);
         return new Resp(res);
+    }
+
+    public Object prbMinLevel(String start, String end, String id, String nodeName) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("startTime", start);
+        map.put("endTime", end);
+        map.put("id", id);
+        map.put("node", nodeName);
+        String prb_min = ConnectPythonUtil.connect(map, "prb_min");
+        return new Resp(prb_min);
+    }
+
+    public Object prbHourLevel(String start, String end, String id, String nodeName) {
+        HashMap<String, String> map = new HashMap<>();
+        map.put("startTime", start);
+        map.put("endTime", end);
+        map.put("id", id);
+        map.put("node", nodeName);
+        String prb_min = ConnectPythonUtil.connect(map, "prb_hour");
+        return new Resp(prb_min);
     }
 }

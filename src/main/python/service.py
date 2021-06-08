@@ -11,15 +11,46 @@ static_dir = r"E:\basssssss\DatabaseCourseDesign\export_file"
 
 
 def communityKPIIndicatorInformationQuery(startTimeStamp, endTimeStamp, field, communityName):
-    sql = "select 起始时间,`{}` from kpi where (小区名称='{}' and 起始时间>='{}' and 起始时间<='{}' )".format(field, communityName, startTimeStamp,
+    sql = "select 起始时间,`{}` from kpi where (小区名称='{}' and 起始时间>='{}' and 起始时间<='{}' )".format(field, communityName,
+                                                                                              startTimeStamp,
                                                                                               endTimeStamp)
     mycursor = cnx.cursor()
 
     mycursor.execute(sql)
-    res = []
+    time = []
+    value = []
     for i in mycursor:
-        res.append({"time": i[0], field: i[1]})
-    return json.dumps({"msg": res})
+        time.append(i[0])
+        value.append(i[1])
+    return json.dumps({"time": time, "value": value})
+
+
+def prb_hour(startTime, endTime, id, node):
+    sql = "SELECT StartHour,idx_{} from tbPRBnew WHERE (StartHour > '{}' and StartHour < '{}' and ENODEB_NAME ='{}' )" \
+        .format(id, startTime, endTime, node)
+    mycursor = cnx.cursor()
+
+    mycursor.execute(sql)
+    time = []
+    value = []
+    for i in mycursor:
+        time.append(i[0])
+        value.append(i[1])
+    return json.dumps({"time": time, "value": value})
+
+
+def prb_min(startTime, endTime, id, node):
+    sql = "SELECT StartTime,idx_{} from prb WHERE (StartTime > '{}' and StartTime < '{}' and ENODEB_NAME ='{}' )" \
+        .format(id, startTime, endTime, node)
+    mycursor = cnx.cursor()
+
+    mycursor.execute(sql)
+    time = []
+    value = []
+    for i in mycursor:
+        time.append(i[0])
+        value.append(i[1])
+    return json.dumps({"time": time, "value": value})
 
 
 def exportTable(tableName):
@@ -35,7 +66,7 @@ def exportTable(tableName):
     df.to_excel("{}.xlsx".format(file_name), index=False)
     os.remove(tmp_path)
 
-    shutil.move("{}.xlsx".format(file_name),os.path.join(static_dir,file_name+".xlsx"))
+    shutil.move("{}.xlsx".format(file_name), os.path.join(static_dir, file_name + ".xlsx"))
     # os.system("mv {} {}".format("{}.xlsx".format(file_name), static_dir))
     return "/database/{}.xlsx".format(file_name)
 
@@ -45,10 +76,58 @@ def convertJsonToExcel(jsonData):
     file_name = str(uuid.uuid4())
     js.to_excel("{}.xlsx".format(file_name), index=False)
 
-    shutil.move("{}.xlsx".format(file_name),os.path.join(static_dir,file_name+".xlsx"))
+    shutil.move("{}.xlsx".format(file_name), os.path.join(static_dir, file_name + ".xlsx"))
     return "/database/{}.xlsx".format(file_name)
 
+
+def getInfo(type):
+    if os.path.exists("{}.json".format(type)):
+        with open("{}.json".format(type)) as f:
+            res = json.load(f)
+            return res
+    res = {}
+    cursor = cnx.cursor(buffered=True)
+    cursor.execute("select * from %s" % type)
+    col_name_list = [tuple[0] for tuple in cursor.description]
+    community_name = []
+    cursor.close()
+    if type == "kpi":
+        col_name_list.remove('起始时间')
+        col_name_list.remove('网元基站名称')
+        col_name_list.remove('小区')
+        col_name_list.remove('小区名称')
+
+        sql = "select DISTINCT 小区名称 FROM kpi; "
+        mycursor = cnx.cursor()
+
+        mycursor.execute(sql)
+        for i in mycursor:
+            community_name.append(i[0])
+
+    else:
+        col_name_list.remove("StartTime")
+        col_name_list.remove("ENODEB_NAME")
+
+        sql = "select DISTINCT ENODEB_NAME FROM prb; "
+        mycursor = cnx.cursor()
+
+        mycursor.execute(sql)
+        for i in mycursor:
+            community_name.append(i[0])
+
+    res["available_fields"] = col_name_list
+    res["community_name"] = community_name
+
+    with open("{}.json".format(type), "w+") as f:
+        json.dump(res, f)
+
+    return json.dumps(res)
+
+
 if __name__ == '__main__':
-    print(communityKPIIndicatorInformationQuery("07/17/2020 00:00:00", "07/18/2020 00:00:00", "无线接通率ay", "H霍义马高速东-HLHF-1"))
+    # print(communityKPIIndicatorInformationQuery("07/17/2020 00:00:00", "07/18/2020 00:00:00", "无线接通率ay",
+    #                                             "H霍义马高速东-HLHF-1"))
     # print(exportTable("kpi"))
-    pass
+    # print(prb_min('07/17/2020 00', '07/17/2020 12', 10, 'B马310国道煤场-HLHF'))
+    # pass
+    print(getInfo("prb"))

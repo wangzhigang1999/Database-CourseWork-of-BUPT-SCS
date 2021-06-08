@@ -8,7 +8,11 @@ import java.util.HashMap;
 public class ConnectPythonUtil {
     @SneakyThrows
     public static String connect(HashMap<String, String> keyValueMap, String router) {
-        org.jsoup.Connection.Response execute = Jsoup.connect("http://127.0.0.1:5000/" + router).data(keyValueMap).execute();
+        org.jsoup.Connection.Response execute = Jsoup.connect("http://127.0.0.1:5000/" + router)
+                .ignoreContentType(true)
+                .data(keyValueMap)
+                .timeout(0)
+                .execute();
         return execute.body();
     }
 

@@ -31,9 +31,8 @@ def create_tbPRBnew():
     '''
     tbPRB = pd.read_sql(sql, con)
     tbPRB['StartHour'] = tbPRB['StartTime'].apply(lambda x: x[:-6])
-    tbPRB['PRB'] = tbPRB[prbs].mean(axis=1)
 
-    tbPRBnew = tbPRB.groupby(['StartHour', 'ENODEB_NAME'], as_index=False)['PRB'].mean()
+    tbPRBnew = tbPRB.groupby(['StartHour', 'ENODEB_NAME'], as_index=False)[prbs].mean()
     tbPRBnew.to_sql('tbPRBnew', con, if_exists='replace', index=False)
 
 
@@ -67,6 +66,7 @@ def create_tbC2Inew(threshold):
 
 def create_tbC2I3(x):
     con = connect()
+    print("connect success")
     x = int(x)
     sql = f'''
         select ServingSector as Sector1, InterferingSector as Sector2
@@ -74,6 +74,7 @@ def create_tbC2I3(x):
         where PrbABS6 > {x / 100}
     '''
     pair = pd.read_sql(sql, con)
+    print("read sql done")
     pair = pair.append([pair['Sector2'], pair['Sector1']])
     pair = pair.drop_duplicates()
     tbC2I3 = pd.DataFrame(columns=['Sector1', 'Sector2', 'Sector3'])
@@ -84,9 +85,11 @@ def create_tbC2I3(x):
                 tbC2I3.loc[i] = sorted((a,) + c)
                 i += 1
 
+    print("process done")
     tbC2I3 = tbC2I3.drop_duplicates()
     tbC2I3 = tbC2I3.sort_values(['Sector1', 'Sector2', 'Sector3'])
     tbC2I3.to_sql('tbC2I3', con, if_exists='replace', index=False)
+    print("write sql done")
 
     data = tbC2I3.head(10).to_json(orient="records")
     file_name = str(uuid.uuid4())
