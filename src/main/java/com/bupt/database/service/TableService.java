@@ -72,7 +72,7 @@ public class TableService {
 
     @SneakyThrows
     public Resp insertToTable(String tableName, MultipartFile file) {
-        String filePath = SAVE_DIR + UUID.randomUUID().toString() + ".xlsx";
+        String filePath = SAVE_DIR + UUID.randomUUID() + ".xlsx";
         File desFile = new File(filePath);
         FileOutputStream stream = new FileOutputStream(desFile);
         stream.write(file.getBytes());

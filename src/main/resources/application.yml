@@ -25,7 +25,6 @@ spring:
     proxy-target-class: true
   data:
     mongodb:
-#      uri: mongodb://127.0.0.1:27017/logs
       authentication-database: admin
       username: admin
       password: admin
@@ -34,6 +33,7 @@ spring:
       port: 27017
   session:
     store-type: mongodb
+
 server:
   port: 8000
   servlet:

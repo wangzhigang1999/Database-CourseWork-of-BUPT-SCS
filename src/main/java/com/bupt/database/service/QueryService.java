@@ -151,7 +151,7 @@ public class QueryService {
      * 获取指定小区的全部信息
      *
      * @param community 指定的小区名称
-     * @return
+     * @return Resp
      */
     public Resp getCommunity(String community) {
         QueryWrapper<Cell> wrapper = new QueryWrapper<>();

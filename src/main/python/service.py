@@ -11,8 +11,8 @@ static_dir = r"E:\basssssss\DatabaseCourseDesign\export_file"
 
 
 def communityKPIIndicatorInformationQuery(startTimeStamp, endTimeStamp, field, communityName):
-    sql = "select 起始时间,`{}` from kpi where (小区名称='{}' and 起始时间>='{}' and 起始时间<='{}' )".format(field, communityName,
-                                                                                              startTimeStamp,                                                                               endTimeStamp)
+    sql = "select 起始时间,`{}` from kpi where (小区名称='{}' and 起始时间>='{}' and 起始时间<='{}' )" \
+        .format(field, communityName, startTimeStamp, endTimeStamp)
     mycursor = cnx.cursor()
     mycursor.execute(sql)
     time = []
@@ -114,6 +114,9 @@ def getInfo(type):
         col_name_list.remove("StartTime")
         col_name_list.remove("ENODEB_NAME")
 
+        for i in range(0, len(col_name_list)):
+            col_name_list[i] = str(col_name_list[i]).replace("idx_", "")
+
         sql = "select DISTINCT ENODEB_NAME FROM prb; "
         mycursor = cnx.cursor()
 
@@ -121,6 +124,7 @@ def getInfo(type):
         for i in mycursor:
             community_name.append(i[0])
         mycursor.close()
+
     res["available_fields"] = col_name_list
     res["community_name"] = community_name
 

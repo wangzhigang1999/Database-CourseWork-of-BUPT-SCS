@@ -1,12 +1,16 @@
 import os
 
 dir = r"E:\basssssss\DatabaseCourseDesign\src\main"
-# dir = r"./"
+
+filter_ext = ["pyc","json","xlsx","csv"]
 
 total_lines = 0
 
 
 def cacu(path):
+    ext = path.split(".")[-1]
+    if ext in filter_ext:
+        return 0
     print(path)
     global total_lines
     try:

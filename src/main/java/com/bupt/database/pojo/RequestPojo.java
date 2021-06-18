@@ -15,9 +15,9 @@ import java.util.Map;
 public class RequestPojo {
     private String reqUrl;
     private String remoteAddr;
-    private Map<String, String[]> reqParms;
-    private String httpMethord;
-    private String classMethord;
+    private Map<String, String[]> reqParams;
+    private String httpMethod;
+    private String classMethod;
     private String functionArgs;
 
 }

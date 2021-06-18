@@ -326,7 +326,6 @@ public class XlsxInsert {
 
         }
 
-
         HashMap<String, Integer> map = new HashMap<>(16);
         map.put("success", successCnt);
         map.put("fail", failCnt);
